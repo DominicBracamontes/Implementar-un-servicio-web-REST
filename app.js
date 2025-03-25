@@ -10,7 +10,7 @@ router.get("/", controlador.getAll);
 router.get("/:id", controlador.getById);  
 router.post("/", controlador.create);     
 router.put("/:id", controlador.update);   
-router.patch("/:id", controlador.updateName);   
+router.patch("/:id", controlador.updateStudent);   
 router.delete("/:id", controlador.remove); 
 
 app.use("/estudiantes", router);

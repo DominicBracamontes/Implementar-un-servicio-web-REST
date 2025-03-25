@@ -48,19 +48,33 @@ const update = (req, res) => {
     }
 }
 
-const updateName = (req, res) => {
+const updateStudent = (req, res) => {
     const estudiante = estudiantes.find(e => e.matricula === req.params.id);
-    if (estudiante) {
-        const { nombre } = req.body;
-        if (nombre) {
-            estudiante.nombre = nombre;
-            res.json({ mensaje: `Nombre del estudiante con matricula ${req.params.id} actualizado`, estudiante });
-        } else {
-            res.status(400).send("Ingresa un nuevo nombre");
-        }
-    } else {
-        res.status(404).send("Estudiante no encontrado");
+    
+    if (!estudiante) {
+        return res.status(404).send("Estudiante no encontrado");
     }
+
+    const { nombre, matricula } = req.body;
+    
+    if (!nombre && !matricula) {
+        return res.status(400).send("Debe proporcionar al menos un atributo para actualizar (nombre o matricula)");
+    }
+
+    if (nombre) {
+        estudiante.nombre = nombre;
+    }
+    
+    if (matricula) {
+        if (matricula !== estudiante.matricula && estudiantes.some(e => e.matricula === matricula)) {
+            return res.status(400).send("La matricula dada ya existe");
+        }
+        estudiante.matricula = matricula;
+    }
+    res.json({
+        mensaje: `Estudiante actualizado`,
+        estudiante
+    });
 }
 
 const remove = (req, res) => {
@@ -73,4 +87,4 @@ const remove = (req, res) => {
     }
 }
 
-module.exports = { getAll, getById, create, update, updateName, remove };
+module.exports = { getAll, getById, create, update, updateStudent, remove };
